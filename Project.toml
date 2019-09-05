@@ -1,0 +1,7 @@
+name = "RedisGraph"
+uuid = "be1a3948-c676-11e9-13ac-9526579f005c"
+authors = ["ikudrautsau <ihar.kudrautsau@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+Redis = "0cf705f9-a9e2-50d1-a699-2b372a39b750"
