@@ -17,7 +17,7 @@ function simplerelation!(g::RedisGraph.Graph)
     RedisGraph.addnode!(g, node2)
     RedisGraph.addedge!(g, edge)
     res = RedisGraph.commit(g)
-end
+end    
 
 
 function rel_withprops!(g::RedisGraph.Graph)
@@ -42,6 +42,8 @@ simplerelation!(g)
 rel_withprops!(g)
 
 @test RedisGraph.query(g, "MATCH (n1)-[e]->(n2) RETURN 2").results[1] == 2
+@test RedisGraph.query(g, "MATCH (n1)-[e]->(n2) RETURN 2.0").results[1] == 2.0
+@test RedisGraph.query(g, "MATCH (n1)-[e]->(n2) RETURN true").results[1] == true
 @test typeof(RedisGraph.query(g, "MATCH (n1)-[e]->(n2) RETURN n1").results[1]) == RedisGraph.Node
 @test typeof(RedisGraph.query(g, "MATCH (n1)-[e]->(n2) RETURN e").results[1]) == RedisGraph.SimpleEdge
 @test RedisGraph.getnode(g, 0).label == "test1" 
