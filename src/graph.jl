@@ -1,14 +1,21 @@
 using Redis
 
-mutable struct Graph
+
+mutable struct Cache
+    labels::Vector{String}
+    relationshipTypes::Vector{String}
+    propertyKeys::Vector{String}
+    Cache() = new(Vector{String}(), Vector{String}(), Vector{String}())
+end
+
+
+struct Graph
     id::String
     redis_conn::Redis.RedisConnectionBase
     nodes::Dict
     edges::Vector{Edge}
-    _labels::Vector{String}
-    _rel_types::Vector{String}
-    _prop_names::Vector{String}
-    Graph(id, redis_conn) = new(id, redis_conn, Dict(), Vector{Edge}(), Vector{String}(), Vector{String}(), Vector{String}())
+    _cache::Cache
+    Graph(id, redis_conn) = new(id, redis_conn, Dict(), Vector{Edge}(), Cache())
 end
 
 
@@ -38,27 +45,32 @@ function call_procedure(g::Graph, procedure::AbstractString, args...; kwargs...)
 end
 
 
-function getlabel(g::Graph, idx::Int)
-    if idx >= length(g._labels)
-        g._labels = call_procedure(g, "db.labels").results
+function lazy_update_cache!(cache::Cache, g::Graph, attr_name::String, required_idx::Int)
+    if required_idx > length(getproperty(cache, Symbol(attr_name)))
+        updated_value = call_procedure(g, "db.$attr_name").results
+        setproperty!(cache, Symbol(attr_name), updated_value)
     end
-    return g._labels[idx+1]
+end
+
+
+function getlabel(g::Graph, idx::Int)
+    required_idx = idx + 1
+    lazy_update_cache!(g._cache, g, "labels", required_idx)
+    return g._cache.labels[required_idx]
 end
 
 
 function getrelation(g::Graph, idx::Int)
-    if idx >= length(g._rel_types)
-        g._rel_types = call_procedure(g, "db.relationshipTypes").results
-    end
-    return g._rel_types[idx+1]
+    required_idx = idx + 1
+    lazy_update_cache!(g._cache, g, "relationshipTypes", required_idx)
+    return g._cache.relationshipTypes[required_idx]
 end
 
 
 function getprop(g::Graph, idx::Int)
-    if idx >= length(g._prop_names)
-        g._prop_names = call_procedure(g, "db.propertyKeys").results
-    end
-    return g._prop_names[idx+1]
+    required_idx = idx + 1
+    lazy_update_cache!(g._cache, g, "propertyKeys", required_idx)
+    return g._cache.propertyKeys[required_idx]
 end
 
 
