@@ -2,6 +2,8 @@ module RedisGraph
 
 export Node, Edge, Graph, SimpleEdge, QueryResult
 
+export addnode!, addedge!
+
 export commit, query, flush!, delete, merge
 
 include("node.jl")
