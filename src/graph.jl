@@ -1,4 +1,4 @@
-using Redis
+using Redis: RedisConnectionBase, execute_command, flatten
 
 
 mutable struct Cache
@@ -11,7 +11,7 @@ end
 
 struct Graph
     id::String
-    redis_conn::Redis.RedisConnectionBase
+    redis_conn::RedisConnectionBase
     nodes::Dict
     edges::Vector{Edge}
     _cache::Cache
@@ -25,7 +25,7 @@ end
 
 
 function getnode(g::Graph, nodeid::Integer)
-    res = RedisGraph.query(g, "MATCH (node) WHERE ID(node) = $nodeid RETURN node")
+    res = query(g, "MATCH (node) WHERE ID(node) = $nodeid RETURN node")
     @assert !isempty(res) "There is no node with id=$nodeid"
     return res.results[1]
 end
@@ -93,7 +93,8 @@ end
 
 
 function query(g::Graph, q::String)
-    response = Redis.execute_command(g.redis_conn, Redis.flatten(["GRAPH.QUERY", g.id, q, "--compact"]))
+    response = execute_command(g.redis_conn, flatten(["GRAPH.QUERY", g.id, q, "--compact"]))
+    println(response)
     return QueryResult(g, response)
 end
 
@@ -106,7 +107,7 @@ end
 
 
 function delete(g::Graph)
-    Redis.execute_command(g.redis_conn, Redis.flatten(["GRAPH.DELETE", g.id]))
+    execute_command(g.redis_conn, flatten(["GRAPH.DELETE", g.id]))
 end
 
 

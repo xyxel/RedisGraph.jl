@@ -1,8 +1,9 @@
-using Redis
-using RedisGraph, Test
+using Test
+using Redis: RedisConnection
+using RedisGraph
 
 function creategraph()
-    db_conn = Redis.RedisConnection()
+    db_conn = RedisConnection()
     g = RedisGraph.Graph("test1", db_conn)
     return g
 end
