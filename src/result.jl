@@ -29,7 +29,7 @@ function parsescalar(::SCALAR_TYPE{SCALAR_TYPE_BOOLEAN}, raw_value::String) retu
 function parsescalar(::SCALAR_TYPE{SCALAR_TYPE_DOUBLE}, raw_value::String) return parse(Float64, raw_value) end
 
 
-function parseprops(g::Graph, raw_props::Array{Any})
+function parseprops(g::Graph, raw_props::Vector{T} where T)
     props = Dict()
     for raw_prop in raw_props
         prop_name = getprop(g, raw_prop[1])
@@ -40,7 +40,7 @@ function parseprops(g::Graph, raw_props::Array{Any})
 end
 
 
-function parsenode(g::Graph, raw_entry::Array{Any})
+function parsenode(g::Graph, raw_entry::Vector{T} where T)
     node_id = raw_entry[1]
     label = NaN
     if length(raw_entry[2]) != 0
@@ -51,7 +51,7 @@ function parsenode(g::Graph, raw_entry::Array{Any})
 end
 
 
-function parseedge(g::Graph, raw_entry::Array{Any})
+function parseedge(g::Graph, raw_entry::Vector{T} where T)
     edge_id = raw_entry[1]
     relation = getrelation(g, raw_entry[2])
     src_node_id = raw_entry[3]
@@ -61,13 +61,13 @@ function parseedge(g::Graph, raw_entry::Array{Any})
 end
 
 
-function parseentry(g::Graph, raw_entry::Array{Any}, ::ENTRY_TYPE{ENTRY_TYPE_UNKNOWN}) @assert false "Unknown result entry" end
-function parseentry(g::Graph, raw_entry::Array{Any}, ::ENTRY_TYPE{ENTRY_TYPE_SCALAR}) return parsescalar(SCALAR_TYPE(raw_entry[1]), raw_entry[2]) end
-function parseentry(g::Graph, raw_entry::Array{Any}, ::ENTRY_TYPE{ENTRY_TYPE_NODE}) return parsenode(g, raw_entry) end
-function parseentry(g::Graph, raw_entry::Array{Any}, ::ENTRY_TYPE{ENTRY_TYPE_RELATION}) return parseedge(g, raw_entry) end
+function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_UNKNOWN}) @assert false "Unknown result entry" end
+function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_SCALAR}) return parsescalar(SCALAR_TYPE(raw_entry[1]), raw_entry[2]) end
+function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_NODE}) return parsenode(g, raw_entry) end
+function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_RELATION}) return parseedge(g, raw_entry) end
 
 
-function parsestatistics(raw_stats::Array{Any})
+function parsestatistics(raw_stats::Vector{String})
     statistics = Dict()
     for stat in raw_stats
         stat_name, stat_value = split(stat, ": ")
@@ -77,27 +77,20 @@ function parsestatistics(raw_stats::Array{Any})
 end
 
 
-function parseresults(g::Graph, raw_results::Array{Any})
-    header = nothing
-    results = nothing
-    if length(raw_results) != 0
-        header = ResultHeaderEntry.(raw_results[1])
-        results = Vector{Any}()
-        for row in raw_results[2]
-            for (header_entry, raw_result_entry) in zip(header, row)
-                entry = parseentry(g, raw_result_entry, ENTRY_TYPE(header_entry.r_entry_type))
-                push!(results, entry)
-            end
+function parseresults(g::Graph, raw_results::Vector{Vector{T} where T})
+    if length(raw_results) == 0
+        return nothing, nothing
+    end
+
+    header = ResultHeaderEntry.(raw_results[1])
+    results = Vector{Any}()
+    for row in raw_results[2]
+        for (header_entry, raw_result_entry) in zip(header, row)
+            entry = parseentry(g, raw_result_entry, ENTRY_TYPE(header_entry.r_entry_type))
+            push!(results, entry)
         end
     end
     return header, results
-end
-
-
-function parsequery(g::Graph, raw_query_result::Array{Any})
-    stats = parsestatistics(raw_query_result[length(raw_query_result)])
-    header, results = parseresults(g, raw_query_result[1:length(raw_query_result)-1])
-    stats, header, results
 end
 
 
@@ -112,8 +105,13 @@ struct QueryResult
     statistics::Dict{String, Float64}
     header::Union{Vector{ResultHeaderEntry}, Nothing}
     results::Union{Vector{Any}, Nothing}
-    function QueryResult(g::Graph, raw_query_result::Array{Any})
-        stats, header, results = parsequery(g, raw_query_result)
+    function QueryResult(g::Graph, raw_query_result::Vector{Vector{String}})
+        stats = parsestatistics(raw_query_result[length(raw_query_result)])
+        new(stats, nothing, nothing)
+    end
+    function QueryResult(g::Graph, raw_query_result::Vector{Vector{T} where T})
+        stats = parsestatistics(raw_query_result[length(raw_query_result)])
+        header, results = parseresults(g, raw_query_result[1:length(raw_query_result)-1])
         new(stats, header, results)
     end
 end
