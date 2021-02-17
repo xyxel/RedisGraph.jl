@@ -1,19 +1,24 @@
-const SCALAR_TYPE_UNKNOWN = 0
-const SCALAR_TYPE_NULL = 1
-const SCALAR_TYPE_STRING = 2
-const SCALAR_TYPE_INTEGER = 3
-const SCALAR_TYPE_BOOLEAN = 4
-const SCALAR_TYPE_DOUBLE = 5
+const VALUE_TYPE_UNKNOWN = 0
+const VALUE_TYPE_NULL = 1
+const VALUE_TYPE_STRING = 2
+const VALUE_TYPE_INTEGER = 3
+const VALUE_TYPE_BOOLEAN = 4
+const VALUE_TYPE_DOUBLE = 5
+const VALUE_TYPE_ARRAY = 6
+const VALUE_TYPE_EDGE = 7
+const VALUE_TYPE_NODE = 8
+const VALUE_TYPE_PATH = 9
+const VALUE_TYPE_MAP = 10
 
-struct SCALAR_TYPE{x}
+struct VALUE_TYPE{x}
 end
 
-SCALAR_TYPE(x) = SCALAR_TYPE{x}()
+VALUE_TYPE(x) = VALUE_TYPE{x}()
 
 const ENTRY_TYPE_UNKNOWN = 0
 const ENTRY_TYPE_SCALAR = 1
-const ENTRY_TYPE_NODE = 2
-const ENTRY_TYPE_RELATION = 3
+const ENTRY_TYPE_NODE = 2  # Unused, retained for client compatibility.
+const ENTRY_TYPE_RELATION = 3  # Unused, retained for client compatibility.
 
 struct ENTRY_TYPE{x}
 end
@@ -21,12 +26,14 @@ end
 ENTRY_TYPE(x) = ENTRY_TYPE{x}()
 
 
-function parsescalar(::SCALAR_TYPE{SCALAR_TYPE_UNKNOWN}, raw_value::String) @assert false "Unknown scalar type" end
-function parsescalar(::SCALAR_TYPE{SCALAR_TYPE_NULL}, raw_value::String) return nothing end
-function parsescalar(::SCALAR_TYPE{SCALAR_TYPE_STRING}, raw_value::String) return raw_value end
-function parsescalar(::SCALAR_TYPE{SCALAR_TYPE_INTEGER}, raw_value::Int) return raw_value end
-function parsescalar(::SCALAR_TYPE{SCALAR_TYPE_BOOLEAN}, raw_value::String) return parse(Bool, raw_value) end
-function parsescalar(::SCALAR_TYPE{SCALAR_TYPE_DOUBLE}, raw_value::String) return parse(Float64, raw_value) end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_UNKNOWN}, raw_value::String) @assert false "Unknown scalar type" end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_NULL}, raw_value::String) return nothing end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_STRING}, raw_value::String) return raw_value end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_INTEGER}, raw_value::Int) return raw_value end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_BOOLEAN}, raw_value::String) return parse(Bool, raw_value) end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_DOUBLE}, raw_value::String) return parse(Float64, raw_value) end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_EDGE}, raw_entry::Vector{T} where T) return parseedge(g, raw_entry) end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_NODE}, raw_entry::Vector{T} where T) return parsenode(g, raw_entry) end
 
 
 function parseprops(g::Graph, raw_props::Vector{T} where T)
@@ -62,7 +69,7 @@ end
 
 
 function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_UNKNOWN}) @assert false "Unknown result entry" end
-function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_SCALAR}) return parsescalar(SCALAR_TYPE(raw_entry[1]), raw_entry[2]) end
+function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_SCALAR}) return parsevalue(g, VALUE_TYPE(raw_entry[1]), raw_entry[2]) end
 function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_NODE}) return parsenode(g, raw_entry) end
 function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_RELATION}) return parseedge(g, raw_entry) end
 
