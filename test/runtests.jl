@@ -1,41 +1,41 @@
 using Test
 using Redis: RedisConnection
-using RedisGraph
+using RedisGraph: Graph, Node, Edge, SimpleEdge, addnode!, addedge!, commit, delete, query
 
 
 function creategraph()
     db_conn = RedisConnection()
-    g = RedisGraph.Graph("test1", db_conn)
+    g = Graph("test1", db_conn)
     return g
 end
 
 
-function simplerelation!(g::RedisGraph.Graph)
-    node1 = RedisGraph.Node("test1")
-    node2 = RedisGraph.Node("test2")
-    edge = RedisGraph.Edge("edge1", node1, node2)
+function simplerelation!(g::Graph)
+    node1 = Node("test1")
+    node2 = Node("test2")
+    edge = Edge("edge1", node1, node2)
 
-    RedisGraph.addnode!(g, node1)
-    RedisGraph.addnode!(g, node2)
-    RedisGraph.addedge!(g, edge)
-    res = RedisGraph.commit(g)
+    addnode!(g, node1)
+    addnode!(g, node2)
+    addedge!(g, edge)
+    res = commit(g)
 end
 
 
-function rel_withprops!(g::RedisGraph.Graph)
-    node3 = RedisGraph.Node("test3", Dict("a" => 1))
-    node4 = RedisGraph.Node("test4")
-    edge2 = RedisGraph.Edge(1, "edge2", node3, node4, Dict("b" => 1))
+function rel_withprops!(g::Graph)
+    node3 = Node("test3", Dict("a" => 1))
+    node4 = Node("test4")
+    edge2 = Edge(1, "edge2", node3, node4, Dict("b" => 1))
 
-    RedisGraph.addnode!(g, node3)
-    RedisGraph.addnode!(g, node4)
-    RedisGraph.addedge!(g, edge2)
-    res = RedisGraph.commit(g)
+    addnode!(g, node3)
+    addnode!(g, node4)
+    addedge!(g, edge2)
+    res = commit(g)
 end
 
 
-function deletegraph!(g::RedisGraph.Graph)
-    RedisGraph.delete(g)
+function deletegraph!(g::Graph)
+    delete(g)
 end
 
 
@@ -44,12 +44,11 @@ try
     simplerelation!(g)
     rel_withprops!(g)
 
-    @test RedisGraph.query(g, "MATCH (n1)-[e]->(n2) RETURN 2").results[1] == 2
-    @test RedisGraph.query(g, "MATCH (n1)-[e]->(n2) RETURN 2.0").results[1] == 2.0
-    @test RedisGraph.query(g, "MATCH (n1)-[e]->(n2) RETURN true").results[1] == true
-    @test typeof(RedisGraph.query(g, "MATCH (n1)-[e]->(n2) RETURN n1").results[1]) == RedisGraph.Node
-    @test typeof(RedisGraph.query(g, "MATCH (n1)-[e]->(n2) RETURN e").results[1]) == RedisGraph.SimpleEdge
-    @test RedisGraph.getnode(g, 0).label == "test1"
+    @test query(g, "MATCH (n1)-[e]->(n2) RETURN 2").results[1] == 2
+    @test query(g, "MATCH (n1)-[e]->(n2) RETURN 2.0").results[1] == 2.0
+    @test query(g, "MATCH (n1)-[e]->(n2) RETURN true").results[1] == true
+    @test typeof(query(g, "MATCH (n1)-[e]->(n2) RETURN n1").results[1]) == Node
+    @test typeof(query(g, "MATCH (n1)-[e]->(n2) RETURN e").results[1]) == SimpleEdge
 finally
     deletegraph!(g)
 end
