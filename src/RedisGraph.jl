@@ -1,6 +1,6 @@
 module RedisGraph
 
-export Node, Edge, Graph, SimpleEdge, QueryResult
+export Node, Edge, Graph, QueryResult
 
 export addnode!, addedge!
 

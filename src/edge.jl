@@ -1,21 +1,13 @@
 struct Edge
     id::Union{Integer, Nothing}
     relation::String
-    src_node::Node
-    dest_node::Node
+    src_node::Union{Node, Integer}
+    dest_node::Union{Node, Integer}
     properties::Dict
 end
 
-Edge(relation::String, src_node::Node, dest_node::Node, properties::Dict) = Edge(nothing, relation, src_node, dest_node, properties)
-Edge(relation::String, src_node::Node, dest_node::Node) = Edge(nothing, relation, src_node, dest_node, Dict())
-
-struct SimpleEdge
-    id::Integer
-    relation::String
-    src_node_id::Integer
-    dest_node_id::Integer
-    properties::Dict
-end
+Edge(relation::String, src_node::Union{Node, Integer}, dest_node::Union{Node, Integer}, properties::Dict) = Edge(nothing, relation, src_node, dest_node, properties)
+Edge(relation::String, src_node::Union{Node, Integer}, dest_node::Union{Node, Integer}) = Edge(nothing, relation, src_node, dest_node, Dict())
 
 
 function string(edge::Edge)

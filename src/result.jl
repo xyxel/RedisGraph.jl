@@ -64,7 +64,7 @@ function parseedge(g::Graph, raw_entry::Vector{T} where T)
     src_node_id = raw_entry[3]
     dst_node_id = raw_entry[4]
     properties = parseprops(g, raw_entry[5])
-    return SimpleEdge(edge_id, relation, src_node_id, dst_node_id, properties)
+    return Edge(edge_id, relation, src_node_id, dst_node_id, properties)
 end
 
 

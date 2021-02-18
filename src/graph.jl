@@ -115,10 +115,3 @@ function merge(g::Graph, pattern::String)
     query_str = "MERGE $pattern"
     return query(g, query_str)
 end
-
-
-function convert(g::Graph, simple_edge::SimpleEdge)
-    src_node = getnode(g, simple_edge.src_node_id)
-    dest_node = getnode(g, simple_edge.dest_node_id)
-    Edge(simple_edge.id, simple_edge.relation, src_node, dest_node, simple_edge.properties)
-end

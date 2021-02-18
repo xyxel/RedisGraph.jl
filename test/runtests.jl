@@ -1,6 +1,6 @@
 using Test
 using Redis: RedisConnection
-using RedisGraph: Graph, Node, Edge, SimpleEdge, addnode!, addedge!, commit, delete, query
+using RedisGraph: Graph, Node, Edge, addnode!, addedge!, commit, delete, query
 
 
 function creategraph()
@@ -48,7 +48,7 @@ try
     @test query(g, "MATCH (n1)-[e]->(n2) RETURN 2.0").results[1] == 2.0
     @test query(g, "MATCH (n1)-[e]->(n2) RETURN true").results[1] == true
     @test typeof(query(g, "MATCH (n1)-[e]->(n2) RETURN n1").results[1]) == Node
-    @test typeof(query(g, "MATCH (n1)-[e]->(n2) RETURN e").results[1]) == SimpleEdge
+    @test typeof(query(g, "MATCH (n1)-[e]->(n2) RETURN e").results[1]) == Edge
 finally
     deletegraph!(g)
 end
