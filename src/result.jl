@@ -40,7 +40,7 @@ function parseprops(g::Graph, raw_props::Vector{T} where T)
     props = Dict()
     for raw_prop in raw_props
         prop_name = getprop(g, raw_prop[1])
-        prop_value = parsescalar(SCALAR_TYPE(raw_prop[2]), raw_prop[3])
+        prop_value = parsevalue(g, VALUE_TYPE(raw_prop[2]), raw_prop[3])
         props[prop_name] = prop_value
     end
     return props

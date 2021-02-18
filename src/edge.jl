@@ -10,9 +10,20 @@ Edge(relation::String, src_node::Union{Node, Integer}, dest_node::Union{Node, In
 Edge(relation::String, src_node::Union{Node, Integer}, dest_node::Union{Node, Integer}) = Edge(nothing, relation, src_node, dest_node, Dict())
 
 
+function _get_node_str(node::Node)
+    return string(node)
+end
+
+
+function _get_node_str(node::Integer)
+    return "()"
+end
+
+
 function string(edge::Edge)
-    src_label = edge.src_node.label
-    dst_label = edge.dest_node.label
+    src_node_str = _get_node_str(edge.src_node)
+    dest_node_str = _get_node_str(edge.dest_node)
+
     relation = ""
     relat_props = ""
     
@@ -24,6 +35,5 @@ function string(edge::Edge)
         props = ["$prop_name: $prop_value" for (prop_name, prop_value) in pairs(edge.properties)]
         relat = "{" * join(props, ",") * "}"
     end
-
-    "(:$src_label)-[$relation $relat_props]->(:$dst_label)"
+    "$src_node_str-[$relation $relat_props]->$dest_node_str"
 end

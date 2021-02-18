@@ -94,7 +94,6 @@ end
 
 function query(g::Graph, q::String)
     response = execute_command(g.redis_conn, flatten(["GRAPH.QUERY", g.id, q, "--compact"]))
-    println(response)
     return QueryResult(g, response)
 end
 
