@@ -47,6 +47,7 @@ try
     @test query(g, "MATCH (n1)-[e]->(n2) RETURN 2").results[1] == 2
     @test query(g, "MATCH (n1)-[e]->(n2) RETURN 2.0").results[1] == 2.0
     @test query(g, "MATCH (n1)-[e]->(n2) RETURN true").results[1] == true
+    @test query(g, "MATCH (n1)-[e]->(n2) RETURN [1, 2, 'test', 3.0, false]").results[1] == [1, 2, "test", 3.0, false]
     @test typeof(query(g, "MATCH (n1)-[e]->(n2) RETURN n1").results[1]) == Node
     @test typeof(query(g, "MATCH (n1)-[e]->(n2) RETURN e").results[1]) == Edge
 finally

@@ -32,9 +32,19 @@ function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_STRING}, raw_value::String
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_INTEGER}, raw_value::Int) return raw_value end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_BOOLEAN}, raw_value::String) return parse(Bool, raw_value) end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_DOUBLE}, raw_value::String) return parse(Float64, raw_value) end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_ARRAY}, raw_entry::Vector{T} where T) return parsearray(g, raw_entry) end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_EDGE}, raw_entry::Vector{T} where T) return parseedge(g, raw_entry) end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_NODE}, raw_entry::Vector{T} where T) return parsenode(g, raw_entry) end
 
+
+function parsearray(g::Graph, raw_entry::Vector{T} where T)
+    array = []
+    for entry in raw_entry
+        entry_type, entry_value = entry
+        push!(array, parsevalue(g, VALUE_TYPE(entry_type), entry_value))
+    end
+    return array
+end
 
 function parseprops(g::Graph, raw_props::Vector{T} where T)
     props = Dict()
