@@ -27,7 +27,7 @@ ENTRY_TYPE(x) = ENTRY_TYPE{x}()
 
 
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_UNKNOWN}, raw_value::String) @assert false "Unknown scalar type" end
-function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_NULL}, raw_value::String) return nothing end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_NULL}, raw_value::Nothing) return nothing end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_STRING}, raw_value::String) return raw_value end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_INTEGER}, raw_value::Int) return raw_value end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_BOOLEAN}, raw_value::String) return parse(Bool, raw_value) end
