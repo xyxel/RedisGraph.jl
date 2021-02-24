@@ -1,6 +1,6 @@
 using Test
 using Redis: RedisConnection
-using RedisGraph: Graph, Node, Edge, addnode!, addedge!, commit, delete, query
+using RedisGraph: Graph, Node, Edge, Path, addnode!, addedge!, commit, delete, query
 
 
 function creategraph()
@@ -42,7 +42,6 @@ end
 g = creategraph()
 try
     simplerelation!(g)
-    rel_withprops!(g)
 
     @test query(g, "RETURN null").results[1] === nothing
     @test query(g, "RETURN 2").results[1] == 2
@@ -51,6 +50,9 @@ try
     @test query(g, "RETURN [1, 2, 'test', 3.0, false]").results[1] == [1, 2, "test", 3.0, false]
     @test typeof(query(g, "MATCH (n1)-[e]->(n2) RETURN n1").results[1]) == Node
     @test typeof(query(g, "MATCH (n1)-[e]->(n2) RETURN e").results[1]) == Edge
+    @test typeof(query(g, "MATCH p=(n1)-[e]->(n2) RETURN p").results[1]) == Path
+
+    rel_withprops!(g)
 finally
     deletegraph!(g)
 end

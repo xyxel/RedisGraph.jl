@@ -35,6 +35,16 @@ function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_DOUBLE}, raw_value::String
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_ARRAY}, raw_entry::Vector{T} where T) return parsearray(g, raw_entry) end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_EDGE}, raw_entry::Vector{T} where T) return parseedge(g, raw_entry) end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_NODE}, raw_entry::Vector{T} where T) return parsenode(g, raw_entry) end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_PATH}, raw_entry::Vector{T} where T) return parsepath(g, raw_entry) end
+
+
+function parsepath(g::Graph, raw_entry::Vector{T} where T)
+    nodes_entry_type, nodes_entry = raw_entry[1]
+    nodes = parsevalue(g, VALUE_TYPE(nodes_entry_type), nodes_entry)
+    edges_entry_type, edges_entry = raw_entry[2]
+    edges = parsevalue(g, VALUE_TYPE(edges_entry_type), edges_entry)
+    return Path(nodes, edges)
+end
 
 
 function parsearray(g::Graph, raw_entry::Vector{T} where T)
