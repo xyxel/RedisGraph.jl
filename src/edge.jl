@@ -25,15 +25,15 @@ function string(edge::Edge)
     dest_node_str = _get_node_str(edge.dest_node)
 
     relation = ""
-    relat_props = ""
+    props_str = ""
     
     if edge.relation != ""
         relation = ":" * edge.relation
     end
 
     if length(edge.properties) != 0
-        props = ["$prop_name: $prop_value" for (prop_name, prop_value) in pairs(edge.properties)]
-        relat = "{" * join(props, ",") * "}"
+        props = ["$prop_name: " * prop_value_to_string(prop_value) for (prop_name, prop_value) in pairs(edge.properties)]
+        props_str = "{" * join(props, ",") * "}"
     end
-    "$src_node_str-[$relation $relat_props]->$dest_node_str"
+    "$src_node_str-[$relation $props_str]->$dest_node_str"
 end

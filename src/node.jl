@@ -13,6 +13,11 @@ Node(alias::String, label::String) = Node(nothing, alias, label, Dict())
 Node(label::String) = Node(nothing, nothing, label, Dict())
 
 
+# TODO: should be moved to some common module
+function prop_value_to_string(prop_value::Any) return "$prop_value" end
+function prop_value_to_string(prop_value::String) return "\"$prop_value\"" end
+
+
 function string(n::Node)
     alias = ""
     label = n.label
@@ -23,7 +28,7 @@ function string(n::Node)
     end
 
     if length(n.properties) != 0
-        props = ["$prop_name: $prop_value" for (prop_name, prop_value) in pairs(n.properties)]
+        props = ["$prop_name: " * prop_value_to_string(prop_value) for (prop_name, prop_value) in pairs(n.properties)]
         props_str = "{" * join(props, ",") * "}"
     end
     "($alias:$label $props_str)"
