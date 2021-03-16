@@ -50,8 +50,8 @@ end
             @test typeof(edge) == Edge
             @test edge.relation == "SimpleEdge"
             @test edge.properties == Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => false)
-            @test edge.src_node == node1.id
-            @test edge.dest_node == node2.id
+            @test edge.src_node == node1
+            @test edge.dest_node == node2
             @test typeof(node2) == Node
             @test node2.label == "SecondSimpleNode"
         finally
@@ -61,8 +61,21 @@ end
     @testset "check path type" begin
         g = creategraph()
         try
-            simplerelation!(g)
-            @test typeof(query(g, "MATCH p=(n1)-[e]->(n2) RETURN p").results[1]) == Path
+            node1 = Node("FirstSimpleNode", Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => true))
+            node2 = Node("SecondSimpleNode")
+            edge = Edge("SimpleEdge", node1, node2, Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => false))
+        
+            addnode!(g, node1)
+            addnode!(g, node2)
+            addedge!(g, edge)
+            res = commit(g)
+
+            result_path = query(g, "MATCH p=(n1)-[e]->(n2) RETURN p").results[1]
+
+            @test typeof(result_path) == Path
+            @test result_path.nodes == Path([node1, node2], [edge]).nodes
+            # it's not clear how to check edges in this case
+            # @test result_path.edges == Path([node1, node2], [edge]).edges
         finally
             deletegraph!(g)
         end
