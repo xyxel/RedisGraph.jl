@@ -81,8 +81,8 @@ end
 function parseedge(g::Graph, raw_entry::Vector{T} where T)
     edge_id = raw_entry[1]
     relation = getrelation(g, raw_entry[2])
-    src_node_id = raw_entry[3]
-    dst_node_id = raw_entry[4]
+    src_node_id = Node(raw_entry[3])
+    dst_node_id = Node(raw_entry[4])
     properties = parseprops(g, raw_entry[5])
     return Edge(edge_id, relation, src_node_id, dst_node_id, properties)
 end

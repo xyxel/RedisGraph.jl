@@ -1,8 +1,8 @@
 struct Edge
     id::Union{Integer, Nothing}
     relation::String
-    src_node::Union{Node, Integer}
-    dest_node::Union{Node, Integer}
+    src_node::Node
+    dest_node::Node
     properties::Dict
 end
 
@@ -37,3 +37,18 @@ function string(edge::Edge)
     end
     "$src_node_str-[$relation $props_str]->$dest_node_str"
 end
+
+
+function isequal(x::Edge, y::Edge)
+    if x.id != nothing && y.id != nothing && x.id == y.id
+        return true
+    else
+        if x.relation == y.relation && x.src_node == y.src_node && x.dest_node == y.dest_node && x.properties == y.properties
+            return true
+        end
+    end
+    return false
+end
+
+
+Base.:(==)(x::Edge, y::Edge) = isequal(x, y)

@@ -11,6 +11,7 @@ Node(alias::String, label::String, properties::Dict) = Node(nothing, alias, labe
 Node(label::String, properties::Dict) = Node(nothing, nothing, label, properties)
 Node(alias::String, label::String) = Node(nothing, alias, label, Dict())
 Node(label::String) = Node(nothing, nothing, label, Dict())
+Node(id::Integer) = Node(id, nothing, "", Dict())
 
 
 # TODO: should be moved to some common module
@@ -33,3 +34,18 @@ function string(n::Node)
     end
     "($alias:$label $props_str)"
 end
+
+
+function isequal(x::Node, y::Node)
+    if x.id != nothing && y.id != nothing && x.id == y.id
+        return true
+    else
+        if x.label == y.label && x.properties == y.properties
+            return true
+        end
+    end
+    return false
+end
+
+
+Base.:(==)(x::Node, y::Node) = isequal(x, y)
