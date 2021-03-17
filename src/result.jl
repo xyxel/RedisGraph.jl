@@ -15,18 +15,7 @@ end
 
 VALUE_TYPE(x) = VALUE_TYPE{x}()
 
-const ENTRY_TYPE_UNKNOWN = 0
-const ENTRY_TYPE_SCALAR = 1
-const ENTRY_TYPE_NODE = 2  # Unused, retained for client compatibility.
-const ENTRY_TYPE_RELATION = 3  # Unused, retained for client compatibility.
-
-struct ENTRY_TYPE{x}
-end
-
-ENTRY_TYPE(x) = ENTRY_TYPE{x}()
-
-
-function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_UNKNOWN}, raw_value::String) @assert false "Unknown scalar type" end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_UNKNOWN}, raw_value::String) @assert false "Unknown value type" end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_NULL}, raw_value::Nothing) return nothing end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_STRING}, raw_value::String) return raw_value end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_INTEGER}, raw_value::Int) return raw_value end
@@ -88,12 +77,6 @@ function parseedge(g::Graph, raw_entry::Vector{T} where T)
 end
 
 
-function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_UNKNOWN}) @assert false "Unknown result entry" end
-function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_SCALAR}) return parsevalue(g, VALUE_TYPE(raw_entry[1]), raw_entry[2]) end
-function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_NODE}) return parsenode(g, raw_entry) end
-function parseentry(g::Graph, raw_entry::Vector{T} where T, ::ENTRY_TYPE{ENTRY_TYPE_RELATION}) return parseedge(g, raw_entry) end
-
-
 function parsestatistics(raw_stats::Vector{String})
     statistics = Dict()
     for stat in raw_stats
@@ -113,7 +96,7 @@ function parseresults(g::Graph, raw_results::Vector{Vector{T} where T})
     results = Vector{Any}()
     for row in raw_results[2]
         for (header_entry, raw_result_entry) in zip(header, row)
-            entry = parseentry(g, raw_result_entry, ENTRY_TYPE(header_entry.r_entry_type))
+            entry = parsevalue(g, VALUE_TYPE(raw_result_entry[1]), raw_result_entry[2])
             push!(results, entry)
         end
     end
