@@ -7,18 +7,18 @@ using Redis
 using RedisGraph
 
 db_conn = Redis.RedisConnection()
-g = RedisGraph.Graph("test1", db_conn)
+g = RedisGraph.Graph("TestGraph", db_conn)
 
-node1 = RedisGraph.Node("test1", Dict("a" => 1))
-node2 = RedisGraph.Node("test2")
-edge = RedisGraph.Edge("edge1", node1, node2, Dict("b" => 1))
+node1 = Node("FirstSimpleNode", Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => true))
+node2 = Node("SecondSimpleNode")
+edge = Edge("SimpleEdge", node1, node2, Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => false))
 
 RedisGraph.addnode!(g, node1)
 RedisGraph.addnode!(g, node2)
 RedisGraph.addedge!(g, edge)
 res = RedisGraph.commit(g)
 
-res = RedisGraph.query(g, "MATCH (node) WHERE ID(node) = 1 RETURN node")
+res = RedisGraph.query(g, "MATCH (n1)-[e]->(n2) RETURN n1, e, n2")
 println(res.results[1])
 
 RedisGraph.delete(g)
