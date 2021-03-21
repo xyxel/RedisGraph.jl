@@ -1,7 +1,5 @@
 RedisGraph Julia client
 
-The client doesn't support redisgraph 1.x
-
 Usage example:
 
 ```julia
@@ -25,3 +23,8 @@ println(res.results[1])
 
 RedisGraph.delete(g)
 ```
+
+Prerequisites:  
+
+julia >= 1.6.0  
+redisgraph >= 2.0
