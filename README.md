@@ -1,5 +1,7 @@
 RedisGraph Julia client
 
+The client doesn't support redisgraph 1.x
+
 Usage example:
 
 ```julia
