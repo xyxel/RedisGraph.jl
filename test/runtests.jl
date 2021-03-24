@@ -34,7 +34,8 @@ end
         @test query(g, "RETURN 2").results[1] == 2
         @test query(g, "RETURN 2.0").results[1] == 2.0
         @test query(g, "RETURN true").results[1] == true
-        @test query(g, "RETURN [1, 2, 'test', 3.0, false]").results[1] == [1, 2, "test", 3.0, false]
+        @test query(g, "RETURN [1, null, 'test', 3.0, false]").results[1] == [1, nothing, "test", 3.0, false]
+        @test query(g, "RETURN {a: 1, b: null, c: 'test', d: 3.0, e: false}").results[1] == Dict("a" => 1, "b" => nothing, "c" => "test", "d" => 3.0, "e" => false)
     end
     @testset "check simple relation" begin
         g = creategraph()

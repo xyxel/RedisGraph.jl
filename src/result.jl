@@ -25,6 +25,19 @@ function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_ARRAY}, raw_entry::Vector{
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_EDGE}, raw_entry::Vector{T} where T) return parseedge(g, raw_entry) end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_NODE}, raw_entry::Vector{T} where T) return parsenode(g, raw_entry) end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_PATH}, raw_entry::Vector{T} where T) return parsepath(g, raw_entry) end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_MAP}, raw_entry::Vector{T} where T) return parsemap(g, raw_entry) end
+
+
+function parsemap(g::Graph, raw_entry::Vector{T} where T)
+    map = Dict()
+    reshaped_entry = reshape(raw_entry, 2, :)
+    for entry in eachcol(reshaped_entry)
+        map_key, map_value = entry
+        entry_type, entry_value = map_value
+        map[map_key] = parsevalue(g, VALUE_TYPE(entry_type), entry_value)
+    end
+    return map
+end
 
 
 function parsepath(g::Graph, raw_entry::Vector{T} where T)
