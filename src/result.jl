@@ -9,6 +9,7 @@ const VALUE_TYPE_EDGE = 7
 const VALUE_TYPE_NODE = 8
 const VALUE_TYPE_PATH = 9
 const VALUE_TYPE_MAP = 10
+const VALUE_TYPE_POINT = 11
 
 struct VALUE_TYPE{x}
 end
@@ -26,6 +27,17 @@ function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_EDGE}, raw_entry::Vector{T
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_NODE}, raw_entry::Vector{T} where T) return parsenode(g, raw_entry) end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_PATH}, raw_entry::Vector{T} where T) return parsepath(g, raw_entry) end
 function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_MAP}, raw_entry::Vector{T} where T) return parsemap(g, raw_entry) end
+function parsevalue(g::Graph, ::VALUE_TYPE{VALUE_TYPE_POINT}, raw_entry::Vector{T} where T) return parsepoint(g, raw_entry) end
+
+
+function parsepoint(g::Graph, raw_entry::Vector{T} where T)
+    point_value = Dict()
+    latitude, longitude = raw_entry
+    # The Point data type is a set of latitude/longitude coordinates, stored within RedisGraph as a pair of 32-bit floats. (c) https://oss.redislabs.com/redisgraph/datatypes/
+    point_value["latitude"] = parse(Float32, latitude)
+    point_value["longitude"] = parse(Float32, longitude)
+    return point_value
+end
 
 
 function parsemap(g::Graph, raw_entry::Vector{T} where T)
