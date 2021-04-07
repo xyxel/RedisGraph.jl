@@ -26,8 +26,8 @@ RedisGraph.delete(g)
 
 ## Prerequisites
 
-julia >= 1.6.0 
-redisgraph >= 2.0
+julia >= 1.6.0  
+redisgraph >= 2.0  
 
 ## Setup
 
@@ -49,6 +49,8 @@ pkg> add Redis
 
 3. add RedisGraph from the github repo
 
+```julia
 pkg> add https://github.com/xyxel/RedisGraph.jl
+```
 
 More information about package management: https://pkgdocs.julialang.org/v1/
