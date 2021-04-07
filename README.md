@@ -1,6 +1,6 @@
-RedisGraph Julia client
+# RedisGraph Julia client
 
-Usage example:
+## Usage example
 
 ```julia
 using Redis
@@ -24,7 +24,31 @@ println(res.results[1])
 RedisGraph.delete(g)
 ```
 
-Prerequisites:  
+## Prerequisites
 
-julia >= 1.6.0  
+julia >= 1.6.0 
 redisgraph >= 2.0
+
+## Setup
+
+1. redisgraph needs to be running.
+
+You can install it [manually](https://docs.redislabs.com/latest/modules/redisgraph/redisgraph-quickstart/)  
+Or you can use [docker container](https://hub.docker.com/r/redislabs/redisgraph) instead of. For example:
+
+```
+docker run -p 6379:6379 -it --rm redislabs/redisgraph
+```
+
+2. add the [Redis Package](https://github.com/JuliaDatabases/Redis.jl)
+
+```julia
+julia> ]
+pkg> add Redis
+```
+
+3. add RedisGraph from the github repo
+
+pkg> add https://github.com/xyxel/RedisGraph.jl
+
+More information about package management: https://pkgdocs.julialang.org/v1/
