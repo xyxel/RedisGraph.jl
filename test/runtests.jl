@@ -1,10 +1,9 @@
 using Test
-using Redis: RedisConnection
-using RedisGraph: Graph, Node, Edge, Path, addnode!, addedge!, commit, delete, query
+using RedisGraph: Graph, Node, Edge, Path, addnode!, addedge!, commit, delete, query, getdatabase
 
 
 function creategraph()
-    db_conn = RedisConnection()
+    db_conn = getdatabase()
     g = Graph("TestGraph", db_conn)
     return g
 end
