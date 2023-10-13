@@ -40,7 +40,7 @@ end
 
 
 function isequal(x::Edge, y::Edge)
-    if x.id != nothing && y.id != nothing && x.id == y.id
+    if x.id !== nothing && y.id !== nothing && x.id == y.id
         return true
     else
         if x.relation == y.relation && x.src_node == y.src_node && x.dest_node == y.dest_node && x.properties == y.properties

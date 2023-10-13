@@ -24,7 +24,7 @@ function string(n::Node)
     label = n.label
     props_str = ""
 
-    if n.alias != nothing
+    if n.alias !== nothing
         alias = n.alias
     end
 
@@ -37,7 +37,7 @@ end
 
 
 function isequal(x::Node, y::Node)
-    if x.id != nothing && y.id != nothing && x.id == y.id
+    if x.id !== nothing && y.id !== nothing && x.id == y.id
         return true
     else
         if x.label == y.label && x.properties == y.properties
