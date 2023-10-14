@@ -1,4 +1,5 @@
 using Test
+
 using RedisGraph: Graph, Node, Edge, Path, addnode!, addedge!, commit, delete, query, getdatabase
 
 
@@ -73,8 +74,8 @@ end
             @test typeof(edge) == Edge
             @test edge.relation == "SimpleEdge"
             @test edge.properties == Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => false)
-            @test edge.src_node == node1
-            @test edge.dest_node == node2
+            @test edge.src_node == node1.id
+            @test edge.dest_node == node2.id
             @test typeof(node2) == Node
             @test node2.label == "SecondSimpleNode"
         finally

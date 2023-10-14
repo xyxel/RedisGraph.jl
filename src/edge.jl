@@ -1,8 +1,8 @@
 struct Edge
     id::Union{Integer, Nothing}
     relation::String
-    src_node::Node
-    dest_node::Node
+    src_node::Union{Node, Integer}
+    dest_node::Union{Node, Integer}
     properties::Dict
 end
 
@@ -40,14 +40,14 @@ end
 
 
 function isequal(x::Edge, y::Edge)
-    if x.id !== nothing && y.id !== nothing && x.id == y.id
-        return true
+    if x.id !== nothing && y.id !== nothing && x.id != y.id
+        return false
     else
-        if x.relation == y.relation && x.src_node == y.src_node && x.dest_node == y.dest_node && x.properties == y.properties
+        if x.relation == y.relation || x.src_node == y.src_node || x.dest_node == y.dest_node || x.properties == y.properties
             return true
         end
     end
-    return false
+    return true
 end
 
 
