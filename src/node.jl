@@ -10,12 +10,17 @@ struct Node
 end
 
 
+function get_random_alias()
+    return "alias_" * randstring()
+end
+
+
 Node(alias::String, label::String, properties::Dict) = Node(nothing, alias, label, properties)
-Node(label::String, properties::Dict) = Node(nothing, randstring(), label, properties)
+Node(label::String, properties::Dict) = Node(nothing, get_random_alias(), label, properties)
 Node(alias::String, label::String) = Node(nothing, alias, label, Dict())
-Node(label::String) = Node(nothing, randstring(), label, Dict())
-Node(id::Integer) = Node(id, randstring(), "", Dict())
-Node(id::Integer, label::String, properties::Dict) = Node(id, randstring(), label, properties)
+Node(label::String) = Node(nothing, get_random_alias(), label, Dict())
+Node(id::Integer) = Node(id, get_random_alias(), "", Dict())
+Node(id::Integer, label::String, properties::Dict) = Node(id, get_random_alias(), label, properties)
 
 
 # TODO: should be moved to some common module

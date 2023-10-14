@@ -20,7 +20,7 @@ end
 
 
 function addnode!(g::Graph, node::Node)
-    g.nodes[node.label] = node
+    g.nodes[node.alias] = node
 end
 
 
@@ -75,7 +75,7 @@ end
 
 
 function addedge!(g::Graph, edge::Edge)
-    @assert haskey(g.nodes, edge.src_node.label) && haskey(g.nodes, edge.dest_node.label)
+    @assert haskey(g.nodes, edge.src_node.alias) && haskey(g.nodes, edge.dest_node.alias)
     push!(g.edges, edge)
 end
 
