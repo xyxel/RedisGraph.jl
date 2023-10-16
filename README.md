@@ -8,8 +8,8 @@ using RedisGraph
 db_conn = getdatabase()
 g = Graph("TestGraph", db_conn)
 
-node1 = Node("FirstSimpleNode", Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => true))
-node2 = Node("SecondSimpleNode")
+node1 = Node("FirstSimpleNode", ["Label1"], Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => true))
+node2 = Node("SecondSimpleNode", ["Label2", "Label3"])
 edge = Edge("SimpleEdge", node1, node2, Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => false))
 
 addnode!(g, node1)
