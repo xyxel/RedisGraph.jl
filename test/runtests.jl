@@ -11,8 +11,8 @@ end
 
 
 function simplerelation!(g::Graph)
-    node1 = Node("FirstSimpleNode", Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => true))
-    node2 = Node("SecondSimpleNode")
+    node1 = Node(["FirstSimpleNode"], Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => true))
+    node2 = Node(["SecondSimpleNode"])
     edge = Edge("SimpleEdge", node1, node2, Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => false))
 
     addnode!(g, node1)
@@ -69,7 +69,7 @@ end
             node1, edge, node2 = q[1:3]
             
             @test typeof(node1) == Node
-            @test node1.label == "FirstSimpleNode"
+            @test node1.labels == ["FirstSimpleNode"]
             @test node1.properties == Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => true)
             @test typeof(edge) == Edge
             @test edge.relation == "SimpleEdge"
@@ -77,7 +77,7 @@ end
             @test edge.src_node == node1.id
             @test edge.dest_node == node2.id
             @test typeof(node2) == Node
-            @test node2.label == "SecondSimpleNode"
+            @test node2.labels == ["SecondSimpleNode"]
         finally
             deletegraph!(g)
         end
@@ -85,8 +85,8 @@ end
     @testset "check path type" begin
         g = creategraph()
         try
-            node1 = Node("FirstSimpleNode", Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => true))
-            node2 = Node("SecondSimpleNode")
+            node1 = Node(["FirstSimpleNode"], Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => true))
+            node2 = Node(["SecondSimpleNode"])
             edge = Edge("SimpleEdge", node1, node2, Dict("IntProp" => 1, "StringProp" => "node prop", "BoolProp" => false))
         
             addnode!(g, node1)

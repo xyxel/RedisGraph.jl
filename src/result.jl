@@ -83,12 +83,12 @@ end
 
 function parsenode(g::Graph, raw_entry::Vector{T} where T)
     node_id = raw_entry[1]
-    label = NaN
+    labels = []
     if length(raw_entry[2]) != 0
-        label = getlabel(g, raw_entry[2][1])
+        labels = [getlabel(g, label_idx) for label_idx in raw_entry[2]]
     end
     properties = parseprops(g, raw_entry[3])
-    return Node(node_id, label, properties)
+    return Node(node_id, labels, properties)
 end
 
 

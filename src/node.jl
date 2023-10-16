@@ -5,7 +5,7 @@ using Random
 struct Node
     id::Union{Integer, Nothing}
     alias::String
-    label::String
+    labels::Vector{String}
     properties::Dict
 end
 
@@ -15,12 +15,12 @@ function get_random_alias()
 end
 
 
-Node(alias::String, label::String, properties::Dict) = Node(nothing, alias, label, properties)
-Node(label::String, properties::Dict) = Node(nothing, get_random_alias(), label, properties)
-Node(alias::String, label::String) = Node(nothing, alias, label, Dict())
-Node(label::String) = Node(nothing, get_random_alias(), label, Dict())
-Node(id::Integer) = Node(id, get_random_alias(), "", Dict())
-Node(id::Integer, label::String, properties::Dict) = Node(id, get_random_alias(), label, properties)
+Node(alias::String, labels::Vector{String}, properties::Dict) = Node(nothing, alias, labels, properties)
+Node(labels::Vector{String}, properties::Dict) = Node(nothing, get_random_alias(), labels, properties)
+Node(alias::String, labels::Vector{String}) = Node(nothing, alias, labels, Dict())
+Node(labels::Vector{String}) = Node(nothing, get_random_alias(), labels, Dict())
+Node(id::Integer) = Node(id, get_random_alias(), [], Dict())
+Node(id::Integer, labels::Vector{String}, properties::Dict) = Node(id, get_random_alias(), labels, properties)
 
 
 # TODO: should be moved to some common module
@@ -30,14 +30,14 @@ function prop_value_to_string(prop_value::String) return "\"$prop_value\"" end
 
 function string(n::Node)
     alias = n.alias
-    label = n.label
+    labels = join(n.labels, ":")
     props_str = ""
 
     if length(n.properties) != 0
         props = ["$prop_name: " * prop_value_to_string(prop_value) for (prop_name, prop_value) in pairs(n.properties)]
         props_str = "{" * join(props, ",") * "}"
     end
-    "($alias:$label $props_str)"
+    "($alias:$labels $props_str)"
 end
 
 
@@ -46,7 +46,7 @@ function isequal(x::Node, y::Node)
         return false
     end
 
-    if x.label != y.label || x.properties != y.properties
+    if x.labels != y.labels || x.properties != y.properties
         return false
     end
 
