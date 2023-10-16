@@ -26,7 +26,7 @@ delete(g)
 ## Prerequisites
 
 julia >= 1.6.0  
-redisgraph >= 2.0  
+redisgraph >= 2.8  
 
 ## Setup
 
