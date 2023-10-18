@@ -98,6 +98,24 @@ function query(g::Graph, q::String)
 end
 
 
+function ro_query(g::Graph, q::String)
+    response = execute_command(g.redis_conn, flatten(["GRAPH.RO_QUERY", g.id, q, "--compact"]))
+    return QueryResult(g, response)
+end
+
+
+function profile(g::Graph, q::String)
+    response = execute_command(g.redis_conn, flatten(["GRAPH.PROFILE", g.id, q, "--compact"]))
+    return QueryResult(g, response)
+end
+
+
+function show_log(g::Graph)
+    response = execute_command(g.redis_conn, flatten(["GRAPH.SHOWLOG", g.id]))
+    return response
+end
+
+
 function flush!(g::Graph)
     commit(g)
     g.nodes = Dict()
