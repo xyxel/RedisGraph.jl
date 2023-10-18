@@ -13,5 +13,6 @@ include("node.jl")
 include("edge.jl")
 include("path.jl")
 include("graph.jl")
+include("commands.jl")
 include("result.jl")
 end
