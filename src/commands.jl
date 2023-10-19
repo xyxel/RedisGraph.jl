@@ -27,7 +27,7 @@ end
 
 function profile(g::Graph, q::String)
     response = execute_command(g.redis_conn, flatten(["GRAPH.PROFILE", g.id, q, "--compact"]))
-    return QueryResult(g, response)
+return QueryResult(g, response)
 end
 
 
@@ -52,4 +52,14 @@ end
 function merge(g::Graph, pattern::String)
     query_str = "MERGE $pattern"
     return query(g, query_str)
+end
+
+
+function setconfig(g::Graph, param_name::String, value)
+    return execute_command(g.redis_conn, flatten(["GRAPH.CONFIG", "SET", param_name, value]))
+end
+
+
+function getconfig(g::Graph, param_name::String)
+    return execute_command(g.redis_conn, flatten(["GRAPH.CONFIG", "GET", param_name]))
 end
