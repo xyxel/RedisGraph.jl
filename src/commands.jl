@@ -26,14 +26,12 @@ end
 
 
 function profile(g::Graph, q::String)
-    response = execute_command(g.redis_conn, flatten(["GRAPH.PROFILE", g.id, q, "--compact"]))
-return QueryResult(g, response)
+    return execute_command(g.redis_conn, flatten(["GRAPH.PROFILE", g.id, q, "--compact"]))
 end
 
 
-function show_log(g::Graph)
-    response = execute_command(g.redis_conn, flatten(["GRAPH.SHOWLOG", g.id]))
-    return response
+function slowlog(g::Graph)
+    return execute_command(g.redis_conn, flatten(["GRAPH.SLOWLOG", g.id]))
 end
 
 

@@ -27,6 +27,7 @@ function deletegraph!(g::Graph)
 end
 
 
+# Looks like in this file should not be query commands, but just testing of parse command
 @testset "RedisGraph.jl result unittests" begin
     @testset "check simple types" begin
         g = creategraph()
