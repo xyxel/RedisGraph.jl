@@ -1,5 +1,9 @@
 # RedisGraph Julia client
 
+## DEPRECATED
+
+The repo will not be updated anymore. Please consider using FalkorDB.jl instead.
+
 ## Usage example
 
 ```julia
